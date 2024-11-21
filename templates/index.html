@@ -16,8 +16,7 @@
     <h1>Live Knee Data</h1>
     <div id="knee_data"></div>
     <script>
-        const socket = io();
-        
+        const socket = io();      
         socket.on('connect', () => {
             console.log('Connected to server');
             socket.emit('start_data_stream');

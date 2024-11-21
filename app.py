@@ -4,7 +4,7 @@ from flask_socketio import SocketIO
 from knee_data import get_knee_data
 
 app = Flask(__name__)
-socketio = SocketIO(app) # SocketIO
+socketio = SocketIO(app) 
 
 @app.route('/')
 def index():
@@ -17,6 +17,7 @@ def handle_connect():
 @socketio.on('start_data_stream')
 def stream_knee_data():
     while True:
+        # try to catch exception in knee_data
         try:
             data = get_knee_data()
             if data:
@@ -28,12 +29,10 @@ def stream_knee_data():
         socketio.sleep(0.1)
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True) # allow_unsafe_werkzeug=True in order to run on thonny shell
     
-"""
-1. cd regain-sensor
-2. source regain_env/bin/activate
-3. python3 app.py
-
-"""
+# If in Raspberry Pi
+# 1. source regain/bin/activate
+# 2. cd regain-sensor
+# 3. python3 app.py
 
