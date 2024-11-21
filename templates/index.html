@@ -1,22 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Database</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/static/styles.css">
+<html>
+<head>
+    <title>Live Knee Data</title>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script> 
+    <style>
+        h1 {
+          font-size: 1000%;
+        }
+        p {
+          font-size: 500%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Knee Data</h1>
+    <div id="knee_data"></div>
+    <script>
+        const socket = io();
         
-        <!-- <link rel="stylesheet" href="styles.css"> -->
-         <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> -->
-    </head>
-    <body> 
-        <h1>Header</h1>
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis accusantium deleniti voluptas dolorum nesciunt et laudantium quis ullam recusandae ducimus odit quas reiciendis ipsum eveniet facere tenetur enim, quos alias!
-        </p>
-
-        <script src="" async defer></script>
-    </body>
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            socket.emit('start_data_stream');
+        });
+        
+        socket.on('knee_data', (data) => {
+            console.log('Received data:', data); // Debug log
+            if (data) {
+                document.getElementById('knee_data').innerHTML = `
+                    <p>Thigh Angle: ${data.pitch_thigh}°</p>
+                    <p>Shin Angle: ${data.pitch_shin}°</p>
+                    <p>Knee Angle: ${data.knee_angle}°</p>
+                    <p>Gait Phase: ${data.gait_phase}</p>
+                `;
+            }
+        });
+    </script>
+</body>
 </html>
