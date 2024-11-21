@@ -1,19 +1,26 @@
 # Imports
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO
+import get_knee_data
 
 app = Flask(__name__)
+socketio = SocketIO(app) # SocketIO
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-if __name__ in '__main__':
-    app.run(debug=True, host='0.0.0.0')
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
 
-# 1. Activate the virtual environment: regain
-# Command: source regain/bin/activate to activate virtual environment
+@socketio.on('start_data_stream')
+def stream_knee_data():
+    while True:
+        data = get_knee_data.get_knee_data()
+        socketio.emit('knee_data', data)
+        socketio.sleep(0.1)
 
-# 2. Run the the python application
-# Command: cd webdb
-# Command: python3 app.py
+if __name__ == "__main__":
+    socketio.run(app, debug=True)
+
